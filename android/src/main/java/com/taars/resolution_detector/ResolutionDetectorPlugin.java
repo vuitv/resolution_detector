@@ -29,12 +29,18 @@ public class ResolutionDetectorPlugin implements FlutterPlugin, MethodCallHandle
   public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
     if (call.method.equals("getMaxResolution")) {
       MediaCodecInfo codecInfo = findVideoCodecInfo();
-      MediaCodecInfo.CodecCapabilities codecCapabilities = codecInfo.getCapabilitiesForType("video/avc");
-      MediaCodecInfo.VideoCapabilities videoCapabilities = codecCapabilities.getVideoCapabilities();
 
-      int maxWidth = videoCapabilities.getSupportedWidths().getUpper();
-      int maxHeight = videoCapabilities.getSupportedHeights().getUpper();
-      result.success(maxWidth + "x" + maxHeight);
+      String type = getMineType(codecInfo);
+      if (type != null){
+        MediaCodecInfo.CodecCapabilities codecCapabilities = codecInfo.getCapabilitiesForType(type);
+        MediaCodecInfo.VideoCapabilities videoCapabilities = codecCapabilities.getVideoCapabilities();
+
+        int maxWidth = videoCapabilities.getSupportedWidths().getUpper();
+        int maxHeight = videoCapabilities.getSupportedHeights().getUpper();
+        result.success(maxWidth + "x" + maxHeight);
+      } else {
+        result.success("0x0");
+      }
     } else {
       result.notImplemented();
     }
@@ -56,6 +62,16 @@ public class ResolutionDetectorPlugin implements FlutterPlugin, MethodCallHandle
       }
       return null;
     }
+
+  private String getMineType(MediaCodecInfo codecInfo) {
+    String[] types = codecInfo.getSupportedTypes();
+    for (String type : types) {
+      if (type.startsWith("video/")) {
+        return type;
+      }
+    }
+    return null;
+  }
 
 
   @Override
