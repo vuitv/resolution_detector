@@ -1,17 +1,6 @@
 group 'com.taars.resolution_detector'
 version '1.0'
 
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.2.0'
-    }
-}
-
 rootProject.allprojects {
     repositories {
         google()
@@ -23,7 +12,7 @@ apply plugin: 'com.android.library'
 
 android {
     namespace "com.taars.resolution_detector"
-    compileSdkVersion 31
+    compileSdk 36
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
